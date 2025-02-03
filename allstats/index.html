@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #2c2f33, #23272a);
+            color: #f0f0f0;
+            margin: 0;
+            padding: 10px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #2c2f33;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+        }
+        h1 { text-align: center; color: #ffffff; margin-bottom: 15px; font-size: 22px; }
+        h3 { color: #dddddd; margin-top: 10px; font-size: 16px; }
+        ul { list-style: none; padding: 0; margin: 0; }
+        ul li { background: #3b3f45; margin: 5px 0; padding: 6px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); font-size: 12px; }
+        .chart-container { position: relative; height: 300px; margin-top: 10px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Статистика</h1>
+        <h3>Сегодня:</h3>
+        <ul id="today-stats"></ul>
+        <h3>Общая статистика:</h3>
+        <ul id="all-time-stats"></ul>
+        <h3>График за последнюю неделю:</h3>
+        <div class="chart-container">
+            <canvas id="week-chart"></canvas>
+        </div>
+    </div>
+    <script>
+        function decodeData(encoded) {
+            const compressedData = atob(decodeURIComponent(encoded));
+            const uint8Array = new Uint8Array(compressedData.split('').map(c => c.charCodeAt(0)));
+            const decompressed = new TextDecoder().decode(pako.inflate(uint8Array));
+            return JSON.parse(decompressed);
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const encodedData = urlParams.get('data');
+        if (encodedData) {
+            const data = decodeData(encodedData);
+            document.getElementById('today-stats').innerHTML = `
+                <li>Всего сообщений: ${data.today.total}</li>
+                <li>Спам: ${data.today.spam}</li>
+                <li>Не спам: ${data.today.non_spam}</li>`;
+            document.getElementById('all-time-stats').innerHTML = `
+                <li>Всего сообщений: ${data.all_time.total}</li>
+                <li>Спам: ${data.all_time.spam}</li>
+                <li>Не спам: ${data.all_time.non_spam}</li>`;
+            const ctx = document.getElementById('week-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.week.map(e => e.date),
+                    datasets: [
+                        { label: 'Спам', data: data.week.map(e => e.spam), borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'rgba(255, 99, 132, 0.2)', fill: true, tension: 0.4 },
+                        { label: 'Не спам', data: data.week.map(e => e.non_spam), borderColor: 'rgba(75, 192, 192, 1)', backgroundColor: 'rgba(75, 192, 192, 0.2)', fill: true, tension: 0.4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top' } },
+                    scales: {
+                        x: { title: { display: true, text: 'Дата' } },
+                        y: { title: { display: true, text: 'Сообщения' } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

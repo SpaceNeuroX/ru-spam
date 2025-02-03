@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ruSpam: Распознавание рекламы</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+</head>
+<body>
+  <div id="particles-js-left"></div>
+  <div id="particles-js-right"></div>
+  <div class="content">
+    <h1>ruSpam: API для распознавания рекламы</h1>
+
+    <!-- Первый блок с инструкциями по API -->
+    <div class="api-method" onclick="toggleCode('code-api-key')">
+      <div class="method post">Инструкции по API ключу</div>
+      <div class="description">Как получить API ключ</div>
+    </div>
+    <div id="code-api-key" class="code-example">
+      <p>Чтобы получить API ключ, выполните следующие шаги:</p>
+      <ol>
+        <li>Найдите бота <strong>@ruSpamNS_bot</strong> в Telegram.</li>
+        <li>Используйте команду <code>/buy_token &lt;сумма&gt;</code>, чтобы получить ссылку для оплаты.</li>
+        <li>Оплатите по предоставленной ссылке.</li>
+        <li>После оплаты используйте команду <code>/token_balance</code> для получения вашего API ключа и проверки баланса.</li>
+      </ol>
+
+      <h4>Цены:</h4>
+      <p>Каждая классификация текста использует 128 токенов, что стоит 0.04 рубля с вашего баланса.</p>
+    </div>
+
+    <!-- Первый блок с методом API -->
+    <div class="api-method" onclick="toggleCode('code-predict')">
+      <div class="method post">API</div>
+      <div class="description">Классификация текста</div>
+    </div>
+    <div id="code-predict" class="code-example">
+      <pre><code class="language-python">
+import requests
+
+def check_spam(user_token, message, model_name="ruSpam"):
+    server = "https://neurospacex-ruspam.hf.space/api/check_spam"
+    data = {"message": message, "model_name": model_name}
+    headers = {"api-key": user_token}
+
+    response = requests.post(server, json=data, headers=headers)
+    return response.json()
+
+user_token = ""
+message = "Это тестовое сообщение."
+
+# Вы можете указать модель "bert" или "tinybert" для использования:
+# Пример использования:
+# result = check_spam(user_token, message, model_name="bert")
+# result = check_spam(user_token, message, model_name="tinybert")
+
+result = check_spam(user_token, message)
+print(result)
+      </code></pre>
+    </div>
+
+    <!-- Пример ответа сервера с переключением -->
+    <div class="api-method" onclick="toggleCode('code-response')">
+      <div class="method post">Пример ответа сервера</div>
+      <div class="description">Пример ответа от сервера</div>
+    </div>
+    <div id="code-response" class="code-example">
+      <pre><code class="language-json">
+{
+  "is_spam": 0,
+  "confidence": 8.190393145923736e-07,
+  "tokens_used": 18,
+  "cost": 0.005625
+}
+      </code></pre>
+      <p><strong>Пояснение:</strong></p>
+      <ul>
+        <li><strong>is_spam</strong>: Показывает, классифицировано ли сообщение как спам (1 — спам, 0 — не спам).</li>
+        <li><strong>confidence</strong>: Уровень уверенности модели в своей предсказания (чем ближе к 1, тем выше уверенность в классификации).</li>
+        <li><strong>tokens_used</strong>: Количество токенов (слов или подслов), использованных для обработки сообщения при классификации.</li>
+        <li><strong>cost</strong>: Стоимость выполнения предсказания, обычно измеряется в использовании API или кредитах.</li>
+      </ul>
+    </div>
+
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

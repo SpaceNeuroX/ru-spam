@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ruSpam: Тестирование</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="content">
+    <h1>ruSpam: Тестирование сообщения</h1>
+    <div class="form-container">
+      <textarea id="message" placeholder="Введите сообщение для анализа"></textarea>
+      <button onclick="checkSpam()">Проверить</button>
+      <div id="results" class="results"></div>
+      <div id="loading" class="loading" style="display: none;">Проверка...</div>
+    </div>
+  </div>
+  <script src="scripts.js" defer></script>
+</body>
+</html>

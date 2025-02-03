@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика чата</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Статистика чата</h1>
+        <div class="tabs">
+            <button class="tab-button active" id="chartTab">Диаграмма</button>
+            <button class="tab-button" id="numbersTab">Цифры</button>
+        </div>
+        <div class="stats-container">
+            <div class="chart-container" id="todayContainer">
+                <h2>Статистика за сегодня</h2>
+                <canvas id="todayChart"></canvas>
+                <div id="todayNumbers" class="numbers"></div>
+            </div>
+            <div class="chart-container" id="allTimeContainer">
+                <h2>Общая статистика</h2>
+                <canvas id="allTimeChart"></canvas>
+                <div id="allTimeNumbers" class="numbers"></div>
+            </div>
+            <div class="chart-container" id="weeklyContainer">
+                <h2>Статистика за неделю</h2>
+                <canvas id="weeklyChart"></canvas>
+                <div id="weeklyNumbers" class="numbers"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const data = JSON.parse(urlParams.get('data'));
+
+            const todayData = data.today;
+            const allTimeData = data.all_time;
+            const weeklyData = data.weekly;
+
+            const todayChartCanvas = document.getElementById('todayChart').getContext('2d');
+            const allTimeChartCanvas = document.getElementById('allTimeChart').getContext('2d');
+            const weeklyChartCanvas = document.getElementById('weeklyChart').getContext('2d');
+
+            const todayNumbersContainer = document.getElementById('todayNumbers');
+            const allTimeNumbersContainer = document.getElementById('allTimeNumbers');
+            const weeklyNumbersContainer = document.getElementById('weeklyNumbers');
+
+            // Chart.js Setup for Today
+            const todayChart = new Chart(todayChartCanvas, {
+                type: 'pie',
+                data: {
+                    labels: ['Спам', 'Не спам'],
+                    datasets: [{
+                        data: [todayData.spam, todayData.non_spam],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)'
+                        ],
+                    }],
+                },
+                options: {
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    const value = tooltipItem.raw;
+                                    return tooltipItem.label + ': ' + value;
+                                }
+                            }
+                        },
+                        legend: {
+                            labels: {
+                                color: '#fff'
+                            }
+                        },
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value) => value,
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                    },
+                }
+            });
+
+            // Chart.js Setup for All-Time
+            const allTimeChart = new Chart(allTimeChartCanvas, {
+                type: 'pie',
+                data: {
+                    labels: ['Спам', 'Не спам'],
+                    datasets: [{
+                        data: [allTimeData.spam, allTimeData.non_spam],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)'
+                        ],
+                    }],
+                },
+                options: {
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    const value = tooltipItem.raw;
+                                    return tooltipItem.label + ': ' + value;
+                                }
+                            }
+                        },
+                        legend: {
+                            labels: {
+                                color: '#fff'
+                            }
+                        },
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value) => value,
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                    },
+                }
+            });
+
+            // Chart.js Setup for Weekly
+            const weeklyChart = new Chart(weeklyChartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(weeklyData),
+                    datasets: [
+                        {
+                            label: 'Спам',
+                            data: Object.values(weeklyData).map(day => day.spam),
+                            backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        },
+                        {
+                            label: 'Не спам',
+                            data: Object.values(weeklyData).map(day => day.non_spam),
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#fff',
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#fff',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Количество сообщений',
+                                color: '#fff',
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    const value = tooltipItem.raw;
+                                    return tooltipItem.dataset.label + ': ' + value;
+                                }
+                            }
+                        },
+                        legend: {
+                            labels: {
+                                color: '#fff'
+                            }
+                        },
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value) => value,
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                    },
+                }
+            });
+
+            // Display numbers
+            function displayNumbers() {
+                todayNumbersContainer.style.display = 'block';
+                allTimeNumbersContainer.style.display = 'block';
+                weeklyNumbersContainer.style.display = 'block';
+                todayChartCanvas.canvas.style.display = 'none';
+                allTimeChartCanvas.canvas.style.display = 'none';
+                weeklyChartCanvas.canvas.style.display = 'none';
+
+                todayNumbersContainer.innerHTML = `
+                    Спам: ${todayData.spam}<br>
+                    Не спам: ${todayData.non_spam}
+                `;
+                allTimeNumbersContainer.innerHTML = `
+                    Спам: ${allTimeData.spam}<br>
+                    Не спам: ${allTimeData.non_spam}
+                `;
+                weeklyNumbersContainer.innerHTML = `
+                    Спам: ${Object.values(weeklyData).reduce((acc, day) => acc + day.spam, 0)}<br>
+                    Не спам: ${Object.values(weeklyData).reduce((acc, day) => acc + day.non_spam, 0)}
+                `;
+            }
+
+            // Display chart
+            function displayChart() {
+                todayNumbersContainer.style.display = 'none';
+                allTimeNumbersContainer.style.display = 'none';
+                weeklyNumbersContainer.style.display = 'none';
+                todayChartCanvas.canvas.style.display = 'block';
+                allTimeChartCanvas.canvas.style.display = 'block';
+                weeklyChartCanvas.canvas.style.display = 'block';
+            }
+
+            // Tab switcher functionality
+            const chartTab = document.getElementById('chartTab');
+            const numbersTab = document.getElementById('numbersTab');
+
+            chartTab.addEventListener('click', function() {
+                chartTab.classList.add('active');
+                numbersTab.classList.remove('active');
+                displayChart();
+            });
+
+            numbersTab.addEventListener('click', function() {
+                numbersTab.classList.add('active');
+                chartTab.classList.remove('active');
+                displayNumbers();
+            });
+
+            // Default view
+            displayChart();
+        });
+    </script>
+
+    <style>
+        /* Global Styles */
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #121212;
+            color: #E0E0E0;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            background-color: #1E1E1E;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 100%;
+            max-width: 1200px;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: #FFEB3B;
+        }
+
+        h2 {
+            color: #FFF;
+        }
+
+        .tabs {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 1em;
+        }
+
+        .tab-button {
+            background-color: #333;
+            color: #FFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background-color: #555;
+        }
+
+        .tab-button.active {
+            background-color: #FFEB3B;
+            color: #121212;
+        }
+
+        .stats-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2em;
+            flex-wrap: wrap;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            transition: all 0.3s ease;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .numbers {
+            color: #FFF;
+            font-size: 1.5em;
+            margin-top: 1em;
+            display: none;
+            transition: all 0.3s ease;
+        }
+    </style>
+</body>
+</html>
