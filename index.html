@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroSpaceX Bot | Полное руководство</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --primary: #6c63ff;
+            --secondary: #2dd4bf;
+            --text: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 3rem 0;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeIn 1s ease-in;
+        }
+
+        section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.6s ease-out forwards;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+        }
+
+        ul {
+            list-style: none;
+            padding: 1rem 0;
+        }
+
+        li {
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        li:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-family: monospace;
+            display: inline-block;
+            margin: 0.3rem 0;
+        }
+
+        table {
+            width: 100%;
+            margin: 1rem 0;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.3s;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .pro-section {
+            background: linear-gradient(45deg, #6c63ff, #2dd4bf);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pro-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1));
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -50%; }
+            100% { left: 150%; }
+        }
+
+        .command-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .warning {
+            padding: 1rem;
+            border-left: 4px solid #ff4757;
+            background: rgba(255, 71, 87, 0.1);
+            margin: 1rem 0;
+        }
+
+        a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        a:hover {
+            opacity: 0.8;
+        }
+
+        .info-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            h1 { font-size: 2rem; }
+            section { padding: 1rem; }
+            table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ NeuroSpaceX AntiSpam Bot ✨</h1>
+
+        <section>
+            <h2>🔍 Как это работает?</h2>
+            <div class="badge">AI Powered</div>
+            <ul>
+                <li>🧠 Нейросети BERT и TinyBERT</li>
+                <li>📜 Базы данных спамеров (ruSpam, LOLs.bot)</li>
+                <li>🔍 Проверка фото профиля на NSFW-контент</li>
+                <li>🚫 Регулярные выражения для типового спама</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>🔎 Параметры проверки профиля</h2>
+            <div class="badge">Новая функция v2.1</div>
+            <ul>
+                <li>📝 <strong>Био:</strong> Анализ БИО на рекламу</li>
+                <li>🖼 <strong>Фото профиля:</strong> Нейросетевой анализ NSFW-контента</li>
+                <li>🔗 <strong>Базы данных:</strong> Проверка в ruSpam и LOLs.bot в реальном времени</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>👑 Для администраторов групп</h2>
+            <h3>🛠 Настройка бота</h3>
+            <ul>
+                <li>Добавьте бота в группу → Назначьте администратором</li>
+                <li>Активация: <code>/start</code> в группе</li>
+            </ul>
+
+            <h3>⚙ Меню настроек (/info)</h3>
+            <table>
+                <tr><th>Кнопка</th><th>Функция</th></tr>
+                <tr><td>🔒 Работа бота</td><td>Вкл/Выкл весь функционал</td></tr>
+                <tr><td>👥 Проверять всех</td><td>Игнорировать статус доверенных</td></tr>
+                <tr><td>📴 Каналы</td><td>Блокировать сообщения из каналов</td></tr>
+                <tr><td>📤 Пересылки</td><td>Удалять пересланные сообщения</td></tr>
+                <tr><td>💬 Удаление мата</td><td>Автоматическая цензура</td></tr>
+                <tr><td>🤖 Авто-принятие</td><td>Одобрять заявки автоматически</td></tr>
+                <tr><td>🛠 Смена модели</td><td>BERT (точный) / TinyBERT (быстрый)</td></tr>
+                <tr><td>🧹 Удаленные аккаунты</td><td>Сканирует участников → отчет → подтверждение удаления</td></tr>
+                <tr><td>💣 Спам-очистка</td><td>Полное сканирование группы → подтверждение бана</td></tr>
+                <tr><td>📜 Спам-лог</td><td>Отчет в ЛС со спамом за 48 часов</td></tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>🛠 Эксклюзивные команды для администраторов</h2>
+            <table>
+                <tr><th>Команда</th><th>Функция</th></tr>
+                <tr><td><code>/chat_stats</code></td><td>Статистика чата в ЛС 📊</td></tr>
+                <tr><td><code>/wla [ID]</code></td><td>Добавить в белый список ➕</td></tr>
+                <tr><td><code>/wld [ID]</code></td><td>Удалить из белого списка ➖</td></tr>
+                <tr><td><code>/wl</code></td><td>Показать список исключений 👀</td></tr>
+                <tr><td><code>/exclude_topic [ID]</code></td><td>Исключить тему 🚫 <span class="info-badge">Только в группа-форумах</span></td></tr>
+            </table>
+        </section>
+
+        <section class="pro-section">
+            <h2>💎 PRO-режим</h2>
+            <div class="command-list">
+                <div>
+                    <h3>Что дает:</h3>
+                    <ul>
+                        <li>Скрывает уведомления на 14 дней</li>
+                        <li>Приоритетная поддержка</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Активация:</h3>
+                    <ul>
+                        <li>Нажмите «❌ Скрыть уведомления»</li>
+                        <li>Стоимость: 10 звёзд Telegram</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>⚠️ Система репортов</h2>
+            <div class="warning" style="border-color: var(--primary)">
+                <strong>Команда /report имеет разное поведение:</strong>
+                <ul>
+                    <li>👑 Для админов: моментальный бан + удаление сообщения</li>
+                    <li>👤 Для пользователей: повторная проверка через бота</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>👥 Для участников группы</h2>
+            <div class="command-list">
+                <div>
+                    <h3>📌 Основные команды</h3>
+                    <ul>
+                        <li><code>[ID]</code> — проверка пользователя (только в лс)</li>
+                        <li><code>/report</code> — сообщить о спаме</li>
+                        <li><code>/help</code> <span class="info-badge">Только в ЛС</span></li>
+                        <li><code>/dock</code> <span class="info-badge">Только в ЛС</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>❗ Важно</h3>
+                    <ul>
+                        <li>≥15 премиум-эмодзи = спам</li>
+                        <li>Проверка новых участников</li>
+                        <li>Автобан "мертвых" аккаунтов 🗑</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🆘 Поддержка</h2>
+            <div class="warning">
+                <strong>⚠️ Возврат средств:</strong><br>
+                <code>/refund [код_транзакции]</code> в течение 1 часа в группе, в который была произведена операция.
+            </div>
+            <ul>
+                <li>Канал обновлений: <a href="https://t.me/spaceneuro">NeuroSpaceX</a></li>
+                <li>Техподдержка: @NeuroSpaceX</li>
+                <li>API документация: <a href="/dock">Документация</a></li>
+            </ul>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            sections.forEach((section, index) => {
+                section.style.animationDelay = `${index * 0.2}s`;
+            });
+        });
+    </script>
+</body>
+</html>

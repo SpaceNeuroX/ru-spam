@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ruSpamAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+  <style>
+    :root {
+      --primary: #f59e0b;
+      --bg: #0f172a;
+      --surface: #1c1917;
+      --text: #f3f4f6;
+      --border: #44403c;
+      --success: #10b981;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.1;
+    }
+
+    .content {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      z-index: 1;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin: 2rem 0;
+      background: linear-gradient(45deg, #f59e0b, #d97706);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient-pulse 6s infinite;
+    }
+
+    @keyframes gradient-pulse {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 1rem;
+      margin: 1.5rem 0;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    .card.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .card-header {
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .card-header:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .code-block {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      background: #292524;
+      position: relative;
+    }
+
+    .code-block.open {
+      max-height: 1000px;
+    }
+
+    pre {
+      margin: 0;
+      padding: 2rem;
+      font-family: 'Courier New', monospace;
+      color: #f3f4f6;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary);
+    }
+
+    .notification {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--success);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 0.5rem;
+      animation: slideIn 0.3s ease-out, fadeOut 0.3s 2s forwards;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    @keyframes slideIn {
+      from { bottom: -5rem; }
+      to { bottom: 2rem; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    .instruction-list {
+      padding: 2rem;
+    }
+
+    .instruction-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 0.5rem;
+      transition: transform 0.3s;
+    }
+
+    .instruction-item:hover {
+      transform: translateX(10px);
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .price-tag {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      padding: 0.75rem 1.5rem;
+      border-radius: 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1rem 0;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .model-info {
+      padding: 2rem;
+    }
+
+    .keyword { color: #f59e0b; }
+    .string { color: #10b981; }
+    .comment { color: #6b7280; }
+    .function { color: #3b82f6; }
+    .number { color: #8b5cf6; }
+
+    @media (max-width: 768px) {
+      .content {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      pre {
+        padding: 1.5rem;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles" class="particles"></div>
+  <div id="notification" class="notification" style="display: none;">✅ Скопировано!</div>
+
+  <div class="content">
+    <h1>🛡️ ruSpamAI</h1>
+
+    <!-- Инструкция по получению ключа -->
+    <div class="card visible">
+      <div class="card-header" onclick="toggleCode('instruction')">
+        <span>🔑 Получение API ключа</span>
+        <span>▶</span>
+      </div>
+      <div id="instruction" class="code-block">
+        <div class="instruction-list">
+          <div class="instruction-item">
+            <div class="step-number">1</div>
+            <div>
+              Найдите бота 
+              <span class="keyword">@ruSpamNS_bot</span> 
+              в Telegram
+            </div>
+          </div>
+
+          <div class="instruction-item">
+            <div class="step-number">2</div>
+            <div>
+              Используйте команду: 
+              <span class="string">/buy_token &lt;сумма&gt;</span>
+            </div>
+          </div>
+
+          <div class="instruction-item">
+            <div class="step-number">3</div>
+            <div>Оплатите по полученной ссылке</div>
+          </div>
+
+          <div class="instruction-item">
+            <div class="step-number">4</div>
+            <div>
+              Проверьте баланс: 
+              <span class="string">/token_balance</span>
+            </div>
+          </div>
+
+          <div class="price-tag">
+            💰 128 токенов = 0.04₽ за запрос
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Пример кода -->
+    <div class="card visible">
+      <div class="card-header" onclick="toggleCode('code-example')">
+        <span>🚀 Пример использования API</span>
+        <span>▶</span>
+      </div>
+      <div id="code-example" class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+        <pre><span class="keyword">import</span> requests
+
+<span class="keyword">def</span> <span class="function">check_spam</span>(user_token, message, model_name=<span class="string">"ruSpam"</span>):
+    server = <span class="string">"https://neurospacex-ruspam.hf.space/api/check_spam"</span>
+    data = {<span class="string">"message"</span>: message, <span class="string">"model_name"</span>: model_name}
+    headers = {<span class="string">"api-key"</span>: user_token}
+
+    response = requests.post(server, json=data, headers=headers)
+    <span class="keyword">return</span> response.json()
+
+user_token = <span class="string">""</span>
+message = <span class="string">"Это тестовое сообщение."</span>
+
+<span class="comment"># Примеры использования разных моделей:</span>
+<span class="comment"># result = check_spam(user_token, message, model_name="bert")</span>
+<span class="comment"># result = check_spam(user_token, message, model_name="tinybert")</span>
+
+result = check_spam(user_token, message)
+print(result)</pre>
+      </div>
+    </div>
+
+    <!-- Пример ответа -->
+    <div class="card visible">
+      <div class="card-header" onclick="toggleCode('response-example')">
+        <span>📬 Пример ответа сервера</span>
+        <span>▶</span>
+      </div>
+      <div id="response-example" class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">📋 Копировать</button>
+        <pre>{
+  <span class="string">"is_spam"</span>: <span class="number">0</span>,
+  <span class="string">"confidence"</span>: <span class="number">8.190393145923736e-07</span>,
+  <span class="string">"tokens_used"</span>: <span class="number">18</span>,
+  <span class="string">"cost"</span>: <span class="number">0.005625</span>
+}</pre>
+      </div>
+    </div>
+
+    <!-- Информация о моделях -->
+    <div class="card visible">
+      <div class="card-header" onclick="toggleCode('model-info')">
+        <span>🤖 Модели классификации</span>
+        <span>▶</span>
+      </div>
+      <div id="model-info" class="code-block">
+        <div class="model-info">
+          <h3>BERT vs TinyBERT</h3>
+          <p>🧠 <strong>BERT</strong> - максимальная точность (99.5%)</p>
+          <p>⚡ <strong>TinyBERT</strong> - ускоренная версия (в 3.7x быстрее)</p>
+          
+          <div class="price-tag" style="margin-top: 1.5rem;">
+            ⏱️ Время обработки: BERT 180ms / TinyBERT 50ms
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleCode(id) {
+      const block = document.getElementById(id);
+      block.classList.toggle('open');
+    }
+
+    async function copyCode(btn) {
+      const pre = btn.nextElementSibling;
+      const text = pre.innerText;
+      
+      try {
+        await navigator.clipboard.writeText(text);
+        showNotification('✅ Скопировано!');
+      } catch (err) {
+        showNotification('❌ Ошибка копирования');
+      }
+    }
+
+    function showNotification(text) {
+      const notification = document.getElementById('notification');
+      notification.textContent = text;
+      notification.style.display = 'block';
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 2000);
+    }
+
+    particlesJS('particles', {
+      particles: {
+        number: { value: 80 },
+        color: { value: '#f59e0b' },
+        size: { value: 2 },
+        move: {
+          speed: 1.5,
+          out_mode: 'bounce'
+        }
+      },
+      interactivity: {
+        events: {
+          onhover: {
+            enable: true,
+            mode: 'repulse',
+            distance: 150
+          }
+        }
+      }
+    });
+
+    document.querySelectorAll('.card').forEach((card, index) => {
+      setTimeout(() => {
+        card.classList.add('visible');
+      }, index * 150);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Доступ запрещен</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      background: linear-gradient(180deg, #1a1a1a, #000);
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .access-denied {
+      background: rgba(40, 40, 40, 0.9);
+      padding: 40px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 90%;
+    }
+    .access-denied h1 {
+      color: gold;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .access-denied p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .access-denied a {
+      color: gold;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .access-denied a:hover {
+      text-decoration: underline;
+    }
+    .icon {
+      font-size: 4rem;
+      color: gold;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="access-denied" id="access-denied">
+    <div class="icon">
+      <i class="fas fa-ban"></i>
+    </div>
+    <h1>Доступ запрещен</h1>
+    <p>
+      Этот сайт доступен только через Telegram Web App. Пожалуйста, откройте его через Telegram.
+    </p>
+    <p>
+      Если у вас есть вопросы, свяжитесь с поддержкой: 
+      <a href="https://t.me/NeuroSpaceX" target="_blank">@NeuroSpaceX</a>
+    </p>
+  </div>
+
+  <script>
+    if (!window.Telegram || !window.Telegram.WebApp || !window.Telegram.WebApp.initData) {
+      document.getElementById('access-denied').style.display = 'block';
+    } else {
+      window.location.href = 'https://ru-spam.ru';
+    }
+  </script>
+</body>
+</html>
