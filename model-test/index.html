@@ -6,6 +6,7 @@
   <title>ruSpam</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <style>
     body {
       background: linear-gradient(180deg, #1a1a1a, #000);
@@ -206,7 +207,6 @@
     }
     @keyframes spin {100% {transform: rotate(360deg);}}
     .loading {filter: blur(3px);}
-    /* Дополнительный стиль для блока разработчиков */
     .credits {
       margin-top: 20px;
       padding-top: 15px;
@@ -219,16 +219,11 @@
       text-decoration: none;
     }
   </style>
-  <!-- Скрипт для блокировки доступа к панели разработчика -->
   <script>
-    // Блокировка контекстного меню (правый клик)
     document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
     });
-    
-    // Блокировка некоторых сочетаний клавиш
     document.addEventListener('keydown', function(e) {
-      // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U
       if (
           e.keyCode === 123 || 
           (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
@@ -238,8 +233,6 @@
           return false;
       }
     });
-    
-    // Дополнительный метод для попытки обнаружить открытие DevTools
     (function() {
       var devtools = {open: false};
       var threshold = 160;
@@ -249,7 +242,6 @@
         if (widthThreshold || heightThreshold) {
           if (!devtools.open) {
             devtools.open = true;
-            // Здесь можно добавить действие при открытии панели
             console.warn('Панель разработчика открыта');
           }
         } else {
@@ -277,7 +269,6 @@
         <p>
           <a href="https://t.me/ruSpamNS_bot" style="color: gold;">https://t.me/ruSpamNS_bot</a>
         </p>
-        <!-- Дополнительный блок с информацией о разработчиках -->
         <div class="credits">
           <p>Разработчик бота: <a href="https://t.me/NeuroSpaceX" target="_blank">@NeuroSpaceX</a></p>
           <p>Огромное спасибо за помощь в разработке веб-аппа: <a href="https://t.me/Tolstoy_Andrey" target="_blank">@Tolstoy_Andrey</a></p>
@@ -373,33 +364,33 @@
       document.getElementById(tabId).classList.add('active');
       document.querySelector(`a[onclick="showTab('${tabId}')"]`).classList.add('active');
     }
-
+    function encryptData(data) {
+      return CryptoJS.AES.encrypt(data, 'secret-key').toString();
+    }
     async function classify() {
       const message = document.querySelector('.input').value;
-      
       const url = "https://neurospacex-ruspam.hf.space/api/check_spam";
       document.getElementById("loading-overlay").style.display = "flex";
       document.querySelector(".box").classList.add("loading");
-
+      const encryptedInitData = encryptData(Telegram.WebApp.initData);
       try {
         const [bertRes, tinybertRes] = await Promise.all([
           fetch(url, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "api-key": Telegram.WebApp.initData
+              "api-key": encryptedInitData
             },
             body: JSON.stringify({
               message: message,
               model_name: "bert"
             })
           }).then(r => r.json()),
-          
           fetch(url, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "api-key": Telegram.WebApp.initData
+              "api-key": encryptedInitData
             },
             body: JSON.stringify({
               message: message,
@@ -407,17 +398,14 @@
             })
           }).then(r => r.json())
         ]);
-
         const updateProgress = (prefix, res) => {
           let spamPercent = Math.round(res.confidence * 100);
           document.getElementById(`${prefix}-spam`).style.width = `${spamPercent}%`;
           document.getElementById(`${prefix}-not-spam`).style.width = `${100 - spamPercent}%`;
           document.getElementById(`${prefix}-label`).innerText = `Спам ${spamPercent}%`;
         };
-
         updateProgress("bert", bertRes);
         updateProgress("tinybert", tinybertRes);
-
       } catch (err) {
         console.error("Ошибка классификации:", err);
         alert("Произошла ошибка при обработке запроса");
@@ -426,7 +414,6 @@
         document.querySelector(".box").classList.remove("loading");
       }
     }
-
     document.getElementById("classify-btn").addEventListener("click", classify);
     window.onload = function() {
       window.scrollTo(0, 0);
