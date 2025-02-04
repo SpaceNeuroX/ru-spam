@@ -221,6 +221,11 @@
   </style>
 </head>
 <body>
+   <script>
+    if (!window.Telegram || !window.Telegram.WebApp || !window.Telegram.WebApp.initData) {
+      window.location.href = 'https://ru-spam.ru/access-denied';
+    }
+  </script>
   <div class="content-wrapper">
     <div id="home" class="container active">
       <h1>ruSpam</h1>
