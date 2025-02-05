@@ -348,7 +348,7 @@
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "api-key": encryptedInitData
+              "api-key": Telegram.WebApp.initData
             },
             body: JSON.stringify({
               message: message,
@@ -359,7 +359,7 @@
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "api-key": encryptedInitData
+              "api-key": Telegram.WebApp.initData
             },
             body: JSON.stringify({
               message: message,
