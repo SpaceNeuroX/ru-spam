@@ -219,6 +219,37 @@
       text-decoration: none;
     }
   </style>
+  <script>
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (
+          e.keyCode === 123 || 
+          (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
+          (e.ctrlKey && e.keyCode === 85)
+      ) {
+          e.preventDefault();
+          return false;
+      }
+    });
+    (function() {
+      var devtools = {open: false};
+      var threshold = 160;
+      setInterval(function() {
+        var widthThreshold = window.outerWidth - window.innerWidth > threshold;
+        var heightThreshold = window.outerHeight - window.innerHeight > threshold;
+        if (widthThreshold || heightThreshold) {
+          if (!devtools.open) {
+            devtools.open = true;
+            console.warn('Панель разработчика открыта');
+          }
+        } else {
+          devtools.open = false;
+        }
+      }, 500);
+    })();
+  </script>
 </head>
 <body>
   <script>
