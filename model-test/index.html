@@ -220,35 +220,9 @@
     }
   </style>
   <script>
-    document.addEventListener('contextmenu', function(e) {
-      e.preventDefault();
-    });
-    document.addEventListener('keydown', function(e) {
-      if (
-          e.keyCode === 123 || 
-          (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
-          (e.ctrlKey && e.keyCode === 85)
-      ) {
-          e.preventDefault();
-          return false;
-      }
-    });
-    (function() {
-      var devtools = {open: false};
-      var threshold = 160;
-      setInterval(function() {
-        var widthThreshold = window.outerWidth - window.innerWidth > threshold;
-        var heightThreshold = window.outerHeight - window.innerHeight > threshold;
-        if (widthThreshold || heightThreshold) {
-          if (!devtools.open) {
-            devtools.open = true;
-            console.warn('Панель разработчика открыта');
-          }
-        } else {
-          devtools.open = false;
-        }
-      }, 500);
-    })();
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+    document.addEventListener('keydown', function(e) { if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || (e.ctrlKey && e.keyCode === 85)) { e.preventDefault(); return false; } });
+    (function() { var devtools = {open: false}; var threshold = 160; setInterval(function() { var widthThreshold = window.outerWidth - window.innerWidth > threshold; var heightThreshold = window.outerHeight - window.innerHeight > threshold; if (widthThreshold || heightThreshold) { if (!devtools.open) { devtools.open = true; console.warn('Панель разработчика открыта'); } } else { devtools.open = false; } }, 500); })();
   </script>
 </head>
 <body>
@@ -262,13 +236,8 @@
       <h1>ruSpam</h1>
       <div class="box">
         <p>Welcome to ruSpam WebApp!</p>
-        <p>
-          ruSpam - лучший бесплатный антиспам-бот!<br>
-          Без скрытых оплат, с полным бесплатным функционалом и высокой точностью работы.
-        </p>
-        <p>
-          <a href="https://t.me/ruSpamNS_bot" style="color: gold;">https://t.me/ruSpamNS_bot</a>
-        </p>
+        <p>ruSpam - лучший бесплатный антиспам-бот!<br>Без скрытых оплат, с полным бесплатным функционалом и высокой точностью работы.</p>
+        <p><a href="https://t.me/ruSpamNS_bot" style="color: gold;">https://t.me/ruSpamNS_bot</a></p>
         <div class="credits">
           <p>Разработчик бота: <a href="https://t.me/NeuroSpaceX" target="_blank">@NeuroSpaceX</a></p>
           <p>Огромное спасибо за помощь в разработке веб-аппа: <a href="https://t.me/Tolstoy_Andrey" target="_blank">@Tolstoy_Andrey</a></p>
@@ -358,28 +327,38 @@
     </a>
   </div>
   <script>
+    let authKey = "";
     function showTab(tabId) {
       document.querySelectorAll('.container').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.tab-link').forEach(link => link.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
       document.querySelector(`a[onclick="showTab('${tabId}')"]`).classList.add('active');
     }
-    function encryptData(data) {
-      return CryptoJS.AES.encrypt(data, 'secret-key').toString();
+    function encryptData(data, key) {
+      return CryptoJS.AES.encrypt(data, key).toString();
+    }
+    async function getAuthKey() {
+      try {
+        const res = await fetch("https://neurospacex-ruspam.hf.space/api/generate_key", { method: "POST" });
+        const json = await res.json();
+        authKey = json.encryption_key;
+      } catch (e) {
+        console.error("Ошибка получения ключа", e);
+      }
     }
     async function classify() {
       const message = document.querySelector('.input').value;
       const url = "https://neurospacex-ruspam.hf.space/api/check_spam";
       document.getElementById("loading-overlay").style.display = "flex";
       document.querySelector(".box").classList.add("loading");
-      const encryptedInitData = encryptData(Telegram.WebApp.initData);
+      const encryptedInitData = encryptData(Telegram.WebApp.initData, authKey);
       try {
         const [bertRes, tinybertRes] = await Promise.all([
           fetch(url, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "api-key": Telegram.WebApp.initData
+              "api-key": encryptedInitData
             },
             body: JSON.stringify({
               message: message,
@@ -390,7 +369,7 @@
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "api-key": Telegram.WebApp.initData
+              "api-key": encryptedInitData
             },
             body: JSON.stringify({
               message: message,
@@ -415,7 +394,8 @@
       }
     }
     document.getElementById("classify-btn").addEventListener("click", classify);
-    window.onload = function() {
+    window.onload = async function() {
+      await getAuthKey();
       window.scrollTo(0, 0);
     };
   </script>
