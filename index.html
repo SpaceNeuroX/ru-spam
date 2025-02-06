@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeuroSpaceX Bot | Полное руководство</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Yandex.RTB -->
+    <script>window.yaContextCb=window.yaContextCb||[]</script>
+    <script src="https://yandex.ru/ads/system/context.js" async></script>
+    
     <style>
         :root {
             --bg-color: #0a0a0a;
@@ -12,14 +17,12 @@
             --secondary: #2dd4bf;
             --text: #e5e7eb;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
-
         body {
             background: var(--bg-color);
             color: var(--text);
@@ -27,25 +30,20 @@
             padding: 2rem;
             overflow-x: hidden;
         }
-
         ::-webkit-scrollbar {
             width: 8px;
         }
-
         ::-webkit-scrollbar-track {
             background: var(--bg-color);
         }
-
         ::-webkit-scrollbar-thumb {
             background: var(--primary);
             border-radius: 4px;
         }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
         }
-
         h1 {
             font-size: 2.5rem;
             text-align: center;
@@ -55,7 +53,6 @@
             -webkit-text-fill-color: transparent;
             animation: fadeIn 1s ease-in;
         }
-
         section {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
@@ -67,11 +64,9 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
         @keyframes slideUp {
             to { opacity: 1; transform: translateY(0); }
         }
-
         .badge {
             display: inline-block;
             padding: 0.4rem 0.8rem;
@@ -80,12 +75,10 @@
             margin: 0.5rem 0;
             background: linear-gradient(45deg, var(--primary), var(--secondary));
         }
-
         ul {
             list-style: none;
             padding: 1rem 0;
         }
-
         li {
             padding: 0.8rem;
             margin: 0.5rem 0;
@@ -93,12 +86,10 @@
             border-radius: 8px;
             transition: transform 0.3s ease;
         }
-
         li:hover {
             transform: translateX(10px);
             background: rgba(255, 255, 255, 0.05);
         }
-
         code {
             background: rgba(0, 0, 0, 0.4);
             padding: 0.3rem 0.6rem;
@@ -107,30 +98,25 @@
             display: inline-block;
             margin: 0.3rem 0;
         }
-
         table {
             width: 100%;
             margin: 1rem 0;
             border-collapse: collapse;
         }
-
         td, th {
             padding: 1rem;
             text-align: left;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             transition: background 0.3s;
         }
-
         tr:hover td {
             background: rgba(255, 255, 255, 0.02);
         }
-
         .pro-section {
             background: linear-gradient(45deg, #6c63ff, #2dd4bf);
             position: relative;
             overflow: hidden;
         }
-
         .pro-section::before {
             content: '';
             position: absolute;
@@ -142,35 +128,29 @@
             transform: rotate(45deg);
             animation: shine 3s infinite;
         }
-
         @keyframes shine {
             0% { left: -50%; }
             100% { left: 150%; }
         }
-
         .command-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1rem;
         }
-
         .warning {
             padding: 1rem;
             border-left: 4px solid #ff4757;
             background: rgba(255, 71, 87, 0.1);
             margin: 1rem 0;
         }
-
         a {
             color: var(--secondary);
             text-decoration: none;
             transition: opacity 0.3s;
         }
-
         a:hover {
             opacity: 0.8;
         }
-
         .info-badge {
             background: rgba(255,255,255,0.1);
             padding: 0.2rem 0.5rem;
@@ -178,7 +158,6 @@
             font-size: 0.8rem;
             margin-left: 0.5rem;
         }
-
         @media (max-width: 768px) {
             body { padding: 1rem; }
             h1 { font-size: 2rem; }
@@ -188,6 +167,17 @@
     </style>
 </head>
 <body>
+    <!-- Yandex.RTB R-A-14027102-1 -->
+    <div id="yandex_rtb_R-A-14027102-1"></div>
+    <script>
+    window.yaContextCb.push(() => {
+        Ya.Context.AdvManager.render({
+            "blockId": "R-A-14027102-1",
+            "renderTo": "yandex_rtb_R-A-14027102-1"
+        });
+    });
+    </script>
+
     <div class="container">
         <h1>✨ NeuroSpaceX AntiSpam Bot ✨</h1>
 
