@@ -147,16 +147,20 @@
       document.getElementById(tabId).classList.add('active');
       document.querySelector("a[onclick=\"showTab('"+tabId+"')\"]").classList.add('active');
     }
-    function xorCipher(input, key){
-      let output = "";
-      for(let i = 0; i < input.length; i++){
-        let charCode = input.charCodeAt(i) ^ key.charCodeAt(i % key.length);
-        output += String.fromCharCode(charCode);
-      }
-      return output;
+    function xorCipher(input, key) {
+        let output = "";
+        for (let i = 0; i < input.length; i++) {
+            let charCode = input.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+            output += String.fromCharCode(charCode);
+        }
+        return output;
     }
-    function customEncrypt(data, key){
-      return btoa(xorCipher(data, key));
+    
+    function customEncrypt(data, key) {
+        let encrypted = btoa(xorCipher(data, key));
+        console.log("Ключ:", key);
+        console.log("Зашифрованный текст:", encrypted);
+        return encrypted;
     }
     function customDecrypt(encryptedData, key){
       return xorCipher(atob(encryptedData), key);
