@@ -345,15 +345,17 @@
         // Получаем зашифрованные данные в формате Base64
         const encryptedDataBase64 = encrypted.toString();
     
-        // Выводим результат в всплывающее окно
-        alert("Зашифрованные данные: " + encryptedDataBase64);
-        
-        // Также можно вывести в консоль для отладки
+        // Выводим ключ и зашифрованные данные в всплывающее окно
+        alert("Используемый ключ: " + key + "\nЗашифрованные данные: " + encryptedDataBase64);
+    
+        // Также выводим ключ и зашифрованные данные в консоль для отладки
+        console.log("Используемый ключ:", key);
         console.log("Зашифрованные данные (Base64):", encryptedDataBase64);
     
         // Возвращаем зашифрованные данные
         return encryptedDataBase64;
     }
+
 
     async function getAuthKey() {
       try {
