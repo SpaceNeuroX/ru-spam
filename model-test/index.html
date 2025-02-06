@@ -8,7 +8,7 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body{background:linear-gradient(180deg,#1a1a1a,#000);color:#fff;font-family:Arial,sans-serif;margin:0;padding:0;min-height:100vh;overflow-x:hidden}
-    .content-wrapper{padding:20px;padding-bottom:80px;box-sizing:border-box;height:calc(100vh - 80px);overflow-y:auto;position:relative}
+    .content-wrapper{padding:20px;padding-bottom:80px;box-sizing:border-box;height:calc(100vh - 80px);overflow-y:auto;position:relative;display:none}
     .container{max-width:600px;margin:0 auto;display:none}
     .container.active{display:block;animation:fadeIn 0.5s ease}
     @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -38,13 +38,16 @@
     .loading{filter:blur(3px)}
     .credits{margin-top:20px;padding-top:15px;border-top:1px solid rgba(255,255,255,0.1);font-size:14px;line-height:1.5}
     .credits a{color:gold;text-decoration:none}
+    .global-loading{position:fixed;top:0;left:0;width:100%;height:100vh;background:rgba(0,0,0,0.8);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1000}
+    .global-loading p{color:white;margin-top:10px}
   </style>
 </head>
 <body>
-  <script>
-    if(!window.Telegram||!window.Telegram.WebApp||!window.Telegram.WebApp.initData){window.location.href='https://ru-spam.ru/access-denied'}
-  </script>
-  <div class="content-wrapper">
+  <div class="global-loading" id="global-loading">
+    <div class="spinner"></div>
+    <p>Получение ключа шифрования, подождите...</p>
+  </div>
+  <div class="content-wrapper" id="content-wrapper">
     <div id="home" class="container active">
       <h1>ruSpam</h1>
       <div class="box">
@@ -142,25 +145,23 @@
   <script>
     let authKey = "";
     function showTab(tabId){
-      document.querySelectorAll('.container').forEach(tab=>tab.classList.remove('active'));
-      document.querySelectorAll('.tab-link').forEach(link=>link.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      document.querySelector("a[onclick=\"showTab('"+tabId+"')\"]").classList.add('active');
+      document.querySelectorAll(".container").forEach(tab=>tab.classList.remove("active"));
+      document.querySelectorAll(".tab-link").forEach(link=>link.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      document.querySelector("a[onclick=\"showTab('"+tabId+"')\"]").classList.add("active");
     }
-    function xorCipher(input, key) {
-        let output = "";
-        for (let i = 0; i < input.length; i++) {
-            let charCode = input.charCodeAt(i) ^ key.charCodeAt(i % key.length);
-            output += String.fromCharCode(charCode);
-        }
-        return output;
+    function xorCipher(input, key){
+      let output = "";
+      for(let i=0;i<input.length;i++){
+        output += String.fromCharCode(input.charCodeAt(i)^key.charCodeAt(i%key.length));
+      }
+      return output;
     }
-    
-    function customEncrypt(data, key) {
-        let encrypted = btoa(xorCipher(data, key));
-        console.log("Ключ:", key);
-        console.log("Зашифрованный текст:", encrypted);
-        return encrypted;
+    function customEncrypt(data, key){
+      let encrypted = btoa(xorCipher(data, key));
+      console.log("Ключ:", key);
+      console.log("Зашифрованный текст:", encrypted);
+      return encrypted;
     }
     function customDecrypt(encryptedData, key){
       return xorCipher(atob(encryptedData), key);
@@ -172,10 +173,13 @@
         authKey = json.encryption_key;
       }catch(e){
         console.error("Ошибка получения ключа", e);
+      }finally{
+        document.getElementById("global-loading").style.display = "none";
+        document.getElementById("content-wrapper").style.display = "block";
       }
     }
     async function classify(){
-      const message = document.querySelector('.input').value;
+      const message = document.querySelector(".input").value;
       const url = "https://neurospacex-ruspam.hf.space/api/check_spam";
       document.getElementById("loading-overlay").style.display = "flex";
       document.querySelector(".box").classList.add("loading");
@@ -194,10 +198,10 @@
           }).then(r=>r.json())
         ]);
         function updateProgress(prefix, res){
-          let spamPercent = Math.round(res.confidence * 100);
-          document.getElementById(prefix + "-spam").style.width = spamPercent + "%";
-          document.getElementById(prefix + "-not-spam").style.width = (100 - spamPercent) + "%";
-          document.getElementById(prefix + "-label").innerText = "Спам " + spamPercent + "%";
+          let spamPercent = Math.round(res.confidence*100);
+          document.getElementById(prefix+"-spam").style.width = spamPercent+"%";
+          document.getElementById(prefix+"-not-spam").style.width = (100-spamPercent)+"%";
+          document.getElementById(prefix+"-label").innerText = "Спам "+spamPercent+"%";
         }
         updateProgress("bert", bertRes);
         updateProgress("tinybert", tinybertRes);
@@ -210,10 +214,7 @@
       }
     }
     document.getElementById("classify-btn").addEventListener("click", classify);
-    window.onload = async function(){
-      await getAuthKey();
-      window.scrollTo(0, 0);
-    }
+    window.onload = getAuthKey;
   </script>
 </body>
 </html>
