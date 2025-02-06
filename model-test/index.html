@@ -335,17 +335,26 @@
       document.querySelector(`a[onclick="showTab('${tabId}')"]`).classList.add('active');
     }
     function encryptData(data, key) {
-        // Преобразуем ключ в формат, понятный CryptoJS (без автоматической генерации соли)
         const keyBytes = CryptoJS.enc.Utf8.parse(key);
         
-        // Используем ECB режим (не требует IV) для простоты
         const encrypted = CryptoJS.AES.encrypt(data, keyBytes, {
-            mode: CryptoJS.mode.ECB, // Простой режим (но небезопасный для больших данных!)
+            mode: CryptoJS.mode.ECB,
             padding: CryptoJS.pad.Pkcs7
         });
+    
+        // Получаем зашифрованные данные в формате Base64
+        const encryptedDataBase64 = encrypted.toString();
+    
+        // Выводим результат в всплывающее окно
+        alert("Зашифрованные данные: " + encryptedDataBase64);
         
-        return encrypted.toString();
+        // Также можно вывести в консоль для отладки
+        console.log("Зашифрованные данные (Base64):", encryptedDataBase64);
+    
+        // Возвращаем зашифрованные данные
+        return encryptedDataBase64;
     }
+
     async function getAuthKey() {
       try {
         const res = await fetch("https://neurospacex-ruspam.hf.space/api/generate_key", { method: "POST" });
