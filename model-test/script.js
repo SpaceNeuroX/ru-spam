@@ -11,7 +11,7 @@ let telegramId = "";
 if (Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
   telegramId = Telegram.WebApp.initDataUnsafe.user.id.toString();
 } else {
-  console.error("Не удалось получить Telegram ID");
+  window.location.href = "https://ru-spam.ru/access-denied/";
 }
 
 function showTab(tabId) {
